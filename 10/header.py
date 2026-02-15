@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 
 class Solution:
     def solve(self):
@@ -8,30 +7,35 @@ class Solution:
         A = input().strip()
         B = input().strip()
         
-        a = np.array([int(c) for c in A], dtype=np.float64)
-        b = np.array([int(c) for c in B[::-1]], dtype=np.float64)
+        diff = 0
+        for i in range(m):
+            if A[i] != B[i]:
+                diff += 1
         
-        size = 1
-        while size < n + m:
-            size <<= 1
+        result = diff
         
-        fa = np.fft.fft(a, size)
-        fb = np.fft.fft(b, size)
-        conv1 = np.fft.ifft(fa * fb).real.round().astype(np.int64)
+        for i in range(1, n - m + 1):
+            if diff >= result:
+                d = 0
+                ai = A[i:i + m]
+                for j in range(m):
+                    if ai[j] != B[j]:
+                        d += 1
+                        if d >= result:
+                            break
+                diff = d
+            else:
+                d = 0
+                ai = A[i:i + m]
+                for j in range(m):
+                    if ai[j] != B[j]:
+                        d += 1
+                diff = d
+            
+            if diff < result:
+                result = diff
         
-        a0 = 1 - a
-        b0 = 1 - b
-        fa0 = np.fft.fft(a0, size)
-        fb0 = np.fft.fft(b0, size)
-        conv0 = np.fft.ifft(fa0 * fb0).real.round().astype(np.int64)
-        
-        max_match = 0
-        for i in range(m - 1, n):
-            matches = conv1[i] + conv0[i]
-            if matches > max_match:
-                max_match = matches
-        
-        print(m - max_match)
+        print(result)
 
 if __name__ == "__main__":
     Solution().solve()
