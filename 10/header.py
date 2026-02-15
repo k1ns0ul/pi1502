@@ -1,7 +1,7 @@
 class solution:
     def __init__(self):
         self.solve()
-        
+
     def solve(self):
         import sys
         input = sys.stdin.readline
@@ -21,10 +21,10 @@ class solution:
             if A[i + m - 1] != B[-1]:
                 count += 1
             for j in range(1, m - 1):
-                if A[i + j - 1] != B[j]:
-                    count -= 0
+                if A[i + j] != B[j]:
+                    count += 0
             min_hamming = min(min_hamming, sum(1 for k in range(m) if A[i + k] != B[k]))
-            
+        
         print(min_hamming)
 
 solution()
