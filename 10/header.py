@@ -1,15 +1,8 @@
 import sys
 
-try:
-    sys.set_int_max_str_digits(0)
-except AttributeError:
-    pass
-
 class solution:
     def solve(self):
-
         input_data = sys.stdin.read().split()
-        
         if not input_data:
             return
 
@@ -18,46 +11,48 @@ class solution:
         a = input_data[2]
         b = input_data[3]
 
-        prefix_a = [0] * (n + 1)
-        cnt = 0
-        for i, c in enumerate(a):
-            if c == '1':
-                cnt += 1
-            prefix_a[i + 1] = cnt
-            
+        block_size = 21
+        pad = 20
+
+        trans_table = str.maketrans({
+            '1': '0' * pad + '1',
+            '0': '0' * block_size
+        })
+
+        val_a = int(a[::-1].translate(trans_table), 2)
+        val_b = int(b.translate(trans_table), 2)
+
+        prod = val_a * val_b
+        
+        res_str = bin(prod)[2:]
+        len_res = len(res_str)
+
+        prefix_ones = [0] * (n + 1)
+        current_ones = 0
+        for i in range(n):
+            if a[i] == '1':
+                current_ones += 1
+            prefix_ones[i+1] = current_ones
+
         ones_b = b.count('1')
+        min_dist = m + 1
 
-        lookup = {'0': '000000', '1': '000001'}
-        
-        hex_a = "".join([lookup[c] for c in reversed(a)])
-        num_a = int(hex_a, 16)
-        
-        hex_b = "".join([lookup[c] for c in b])
-        num_b = int(hex_b, 16)
-        
-        res = num_a * num_b
-        
-        res_bytes = res.to_bytes((res.bit_length() + 7) // 8, 'little')
-        len_bytes = len(res_bytes)
-        
-        min_dist = m
-        
         for k in range(n - m + 1):
-
-            byte_idx = (m - 1 + k) * 3
-
-            if byte_idx + 2 < len_bytes:
-                overlap = res_bytes[byte_idx] | (res_bytes[byte_idx+1] << 8) | (res_bytes[byte_idx+2] << 16)
-            else:
-                overlap = 0
-
-            curr_ones_a = prefix_a[k + m] - prefix_a[k]
-            dist = curr_ones_a + ones_b - 2 * overlap
+            shift = (k + m - 1) * block_size
+            end_idx = len_res - shift
+            start_idx = end_idx - pad
             
+            matches = 0
+            if end_idx > 0:
+                actual_start = 0 if start_idx < 0 else start_idx
+                if actual_start < end_idx:
+                    matches = int(res_str[actual_start:end_idx], 2)
+
+            dist = (prefix_ones[k + m] - prefix_ones[k]) + ones_b - 2 * matches
             if dist < min_dist:
                 min_dist = dist
-                
+
         print(min_dist)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     solution().solve()
