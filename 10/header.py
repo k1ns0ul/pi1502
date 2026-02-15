@@ -1,7 +1,7 @@
 import sys
 
 class solution:
-    def solve(self):
+    def solve(self) -> result:
         input_data = sys.stdin.read().split()
         if not input_data:
             return
