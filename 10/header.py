@@ -15,22 +15,10 @@ class Solution:
         result = diff
         
         for i in range(1, n - m + 1):
-            if diff >= result:
-                d = 0
-                ai = A[i:i + m]
-                for j in range(m):
-                    if ai[j] != B[j]:
-                        d += 1
-                        if d >= result:
-                            break
-                diff = d
-            else:
-                d = 0
-                ai = A[i:i + m]
-                for j in range(m):
-                    if ai[j] != B[j]:
-                        d += 1
-                diff = d
+            if A[i - 1] != B[0]:
+                diff -= 1
+            if A[i + m - 1] != B[m - 1]:
+                diff += 1
             
             if diff < result:
                 result = diff
