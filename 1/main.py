@@ -1,1 +1,6 @@
 #задание 1
+dtkoghjdthildhg
+fdlhgfdjg;hdgfhdg
+hdgfhdgdg
+hdgfhdgdghdg
+hdgfhdgdghdggd
